@@ -53,3 +53,5 @@ void CardGame::determineWinner() {
             winnerIndex = i;
         }
     }
+        cout << "---------------Game Over-------------" << endl;
+    cout << "Winner: " << players[winnerIndex]->getPlayerName() << endl;
