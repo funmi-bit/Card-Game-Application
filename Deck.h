@@ -3,6 +3,7 @@
 
 #include <algorithm>
 
+// Class representing a deck of cards
 class Deck {
 public:
 int deckCards[50] = {
