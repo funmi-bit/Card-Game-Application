@@ -60,3 +60,6 @@ void CardGame::determineWinner() {
         delete players[i];
     }
 }
+CardGame::~CardGame() {
+  
+}
