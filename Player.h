@@ -11,3 +11,17 @@ public:
     virtual void setPlayerName(const std::string& name) = 0;
     virtual ~Player() {}
 };
+class ConcretePlayer : public Player {
+public:
+    std::string playerName;
+    int cardAtHand;
+    int score;
+
+    ConcretePlayer(const std::string& name);
+    void takeCard(int card) override;
+    int getScore() const override;
+    std::string getPlayerName() const override;
+    void setPlayerName(const std::string& name) override;
+};
+
+#endif // PLAYER_H
