@@ -1,3 +1,10 @@
+#include "CardGame.h"
+#include "Player.h"
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
 // Class representing a card game
 class CardGame {
 public:

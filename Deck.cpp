@@ -1,8 +1,6 @@
-#include <iostream>
-#include <cstdlib>
 #include <algorithm>
-
-using namespace std;
+#include <random>  // for std::default_random_engine and std::random_device
+#include "Deck.h"
 
 // Class representing a deck of cards
 class Deck {

@@ -1,3 +1,7 @@
+#include <algorithm>
+#include <random>  // for std::default_random_engine and std::random_device
+#include "Deck.h"
+
 // Class representing a player in a card game
 class Player {
 public:
