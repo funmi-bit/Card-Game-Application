@@ -12,3 +12,9 @@ int deckCards[50] = {
     6,6,6,6,6,7,7,7,7,7,
     8,8,8,8,8,9,9,9,9,9
 };
+    void shuffle();
+    void dealCard(int card);
+    int getRemainingCards();
+};
+
+#endif // DECK_H
