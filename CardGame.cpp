@@ -55,3 +55,8 @@ void CardGame::determineWinner() {
     }
         cout << "---------------Game Over-------------" << endl;
     cout << "Winner: " << players[winnerIndex]->getPlayerName() << endl;
+      // Clean up memory
+    for (int i = 0; i < 3; ++i) {
+        delete players[i];
+    }
+}
