@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Flashcard</title>
+    <link rel="stylesheet" href="style.css">
+    <a href="index.html" class="homepage">Back to Homepage</a>
+</head>
+<body>
+    <h1>Create your flashcards:</h1>
+    
+    <div class="flashcard-form">
+        <label for="question">Question:</label><br>
+        <textarea id="question" rows="4" cols="50"></textarea>
+        <br><br><br>
+        <label for="answer">Answer:</label><br>
+        <textarea id="answer" rows="4" cols="50"></textarea><br><br>
+        <div class="buttons">
+            <div class="previousArrow" onclick="addFlashcard()">Add flashcard</div>
+            <div class="nextArrow" onclick="viewFlashcards()">View flashcard</div>
+        </div>
+        <div class="saveArrow" onclick="saveFlashcards()">Save flashcards</div>
+
+        <p id="flashcardCount"></p>
+    </div>
+
+    <div class="flashcards" id="flashcards-container">
+        <!-- Flashcards will be dynamically added here -->
+    </div>
+    <button class="shareButton" onclick="shareFlashcards()">Share flashcard</button>
+
+    <!-- Placeholder for displaying the message when no flashcards are available -->
+    <p class="emptyFlashcard"></p>
+
+    <!-- Custom modal overlay and container -->
+    <div class="overlay" id="modalOverlay">
+        <div class="modal" id="modalContainer">
+            <span onclick="closeModal()" style="cursor: pointer; float: right;">&times;</span>
+            <h2>Flashcard Information</h2>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let flashcards = [];
+        let flashcardCounter = 0;
+
+        function addFlashcard() {
+            const question = document.getElementById('question').value;
+            const answer = document.getElementById('answer').value;
+            if (question && answer) {
+                const flashcard = { question, answer };
+                flashcards.push(flashcard);
+                flashcardCounter++;
+
+                // Clear input fields
+                document.getElementById('question').value = '';
+                document.getElementById('answer').value = '';
+
+                // Update flashcards and count in the DOM
+                updateFlashcardCount();
+            } else {
+                alert('Please enter both question and answer.');
+            }
+        }
+
+        function saveFlashcards() {
+            if (flashcards.length > 0) {
+                const content = flashcards.map(flashcard => `${flashcard.question}\n${flashcard.answer}\n`).join('\n');
+                const blob = new Blob([content], { type: 'text/plain' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'flashcards.txt';
+                a.click();
+            } else {
+                alert("No flashcards to save. Add flashcards first.");
+            }
+        }
+
+        function updateFlashcards() {
+            const flashcardsContainer = document.getElementById('flashcards-container');
+            flashcardsContainer.innerHTML = '';
+
+            flashcards.forEach((flashcard, index) => {
+                const card = document.createElement('div');
+                card.classList.add('flashcard');
+                card.innerHTML = `<strong>Question:</strong> ${flashcard.question}<br><strong>Answer:</strong> ${flashcard.answer}`;
+
+                card.addEventListener('click', () => showFlashcard(index));
+
+                flashcardsContainer.appendChild(card);
+            });
+        }
+
+        function updateFlashcardCount() {
+            const flashcardCountElement = document.getElementById('flashcardCount');
+            flashcardCountElement.textContent = `Success! you've added: ${flashcardCounter} flashcard`;
+            flashcardCountElement.style.color = 'green';
+
+            // Hide the empty flashcard message when flashcards are available
+            document.querySelector('.emptyFlashcard').textContent = '';
+        }
+
+        function viewFlashcards() {
+            // Show the first flashcard by default
+            if (flashcards.length > 0) {
+                showFlashcard(0);
+            } else {
+                document.querySelector('.emptyFlashcard').textContent = 'No flashcards to view. Add flashcards first.';
+            }
+        }
+
+        function showFlashcard(index) {
+            // Display the flashcard at the given index
+            const flashcard = flashcards[index];
+            const flashcardContainer = document.getElementById('flashcards-container');
+            flashcardContainer.innerHTML = `<div class="flashcard">
+                <strong>Question:</strong> ${flashcard.question}<br>
+                <strong>Answer:</strong> ${flashcard.answer}
+            </div>`;
+            updateFlashcards();
+        }
+
+        // Custom "Super Share" function using Clipboard API
+        const superShareFlashcards = async () => {
+            if (flashcards.length > 0) {
+                try {
+                    const content = flashcards.map(flashcard => `Question: ${flashcard.question}\nAnswer: ${flashcard.answer}\n\n`).join('');
+                    await navigator.clipboard.writeText(content);
+                    alert('Flashcard text copied to clipboard. You can now share it.');
+                } catch (error) {
+                    console.error('Error copying to clipboard:', error);
+                }
+            } else {
+                document.querySelector('.emptyFlashcard').textContent = 'No flashcards to share. Add flashcards first.';
+            }
+        };
+
+        // Web Share API function
+        const webShareFlashcards = async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'My Flashcards',
+                        text: 'Check out my flashcards!',
+                        url: window.location.href
+                    });
+                } catch (error) {
+                    console.error('Error sharing:', error);
+                }
+            } else {
+                superShareFlashcards(); // Fallback to superShare if Web Share API is not supported
+            }
+        };
+
+        // Close the custom modal
+        const closeModal = () => {
+            document.getElementById('modalOverlay').style.display = 'none';
+        };
+
+        // Share flashcards function
+        const shareFlashcards = () => {
+            if (flashcards.length > 0) {
+                if (navigator.share) {
+                    webShareFlashcards(); // Use Web Share API
+                } else {
+                    superShareFlashcards(); // Fallback to superShare if Web Share API is not supported
+                }
+            } else {
+                document.querySelector('.emptyFlashcard').textContent = 'No flashcards to share. Add flashcards first.';
+            }
+        };
+
+        document.querySelector('.shareButton').addEventListener('click', shareFlashcards);
+    </script>
+</body>
+</html>
